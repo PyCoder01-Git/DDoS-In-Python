@@ -4,6 +4,9 @@ Educational Purposes Only
 --- I do not assume any responsibility for any cyber attack by any person/persons -----
 
 
+---> if you want intsall it: sudo git clone https://github.com/PyCoder01-Git/DDoS-In-Python.git <---
+
+---> And if you want to get into it: cd DDoS-In-Python
 
 ---> İf You Want run it: python3 DDoS-In-Python.py target-ip tcp thread delay <---
 
