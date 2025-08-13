@@ -8,6 +8,6 @@ Educational Purposes Only
 
 ---> And if you want to get into it: cd DDoS-In-Python
 
----> İf You Want run it: python3 DDoS-In-Python.py target-ip tcp thread delay <---
+---> İf You Want run it: python3 ddos.py target-ip tcp thread delay <---
 
----> For example: python3 DDoS-In-Python.py 192.168.1.10 tcp 100 00.1 <---
+---> For example: python3 ddos.py 192.168.1.10 tcp 100 00.1 <---
